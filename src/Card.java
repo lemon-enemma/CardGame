@@ -1,27 +1,80 @@
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class Card {
     private String suit;
     private String value;
-    private String fileName;
+    private String imageFileName;
+    private BufferedImage image;
+    private Rectangle hitbox;
+    private boolean hitOn;
 
-    public Card(String s, String v){
-        suit = s;
-        value = v;
-        fileName = "card_" + suit + "_" + value + ".png";
+    public Card(String suit, String value) {
+        this.suit = suit;
+        this.value = value;
+        this.imageFileName = "card_"+suit+"_"+value+".png";
+        this.image = readImage();
+        this.hitbox = new Rectangle(-10, -10, image.getWidth(), image.getHeight());
+        this.hitOn = true;
     }
 
-    public String getSuit(){
+    public Rectangle getHitbox() {
+        return hitbox;
+    }
+
+    public void setHitbox(Rectangle hitbox) {
+        this.hitbox = hitbox;
+    }
+
+    public String getSuit() {
         return suit;
     }
 
-    public String getValue(){
+
+    public String getValue() {
         return value;
     }
 
-    public String getFileName(){
-        return fileName;
+    public String getImageFileName() {
+        return imageFileName;
     }
 
-    public String toString(){
-        return "Suit: " + suit + "\nValue: " + value + "\nFile Name: " + fileName;
+    public String toString() {
+        return suit + " " + value;
     }
+
+    public boolean getHitOn(){
+        return hitOn;
+    }
+
+    public void setHitOn(){
+        if (hitOn){
+            hitOn = false;
+        }
+        else {
+            hitOn = true;
+        }
+    }
+
+
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public BufferedImage readImage() {
+        try {
+            BufferedImage image;
+            image = ImageIO.read(new File("images/" + imageFileName));
+            return image;
+        }
+        catch (IOException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
 }
