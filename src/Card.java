@@ -11,6 +11,7 @@ public class Card {
     private BufferedImage image;
     private Rectangle hitbox;
     private boolean hitOn;
+    private boolean highlighted;
 
     public Card(String suit, String value) {
         this.suit = suit;
@@ -19,6 +20,7 @@ public class Card {
         this.image = readImage();
         this.hitbox = new Rectangle(-10, -10, image.getWidth(), image.getHeight());
         this.hitOn = true;
+        this.highlighted = false;
     }
 
     public Rectangle getHitbox() {
@@ -56,6 +58,19 @@ public class Card {
         }
         else {
             hitOn = true;
+        }
+    }
+
+    public boolean isHighlighted(){
+        return highlighted;
+    }
+
+    public void setHighlighted(){
+        if (highlighted){
+            highlighted = false;
+        }
+        else {
+            highlighted = true;
         }
     }
 
