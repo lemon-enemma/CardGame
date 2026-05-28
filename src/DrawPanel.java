@@ -16,6 +16,7 @@ class DrawPanel extends JPanel implements MouseListener {
         d = new Deck();
         unusedDeck = d.getCards();
         currentCards = new Card[3][3];
+        valid = true;
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 currentCards[r][c] = unusedDeck.get((int) (Math.random() * unusedDeck.size()));
@@ -33,8 +34,9 @@ class DrawPanel extends JPanel implements MouseListener {
         super.paintComponent(g);
         int x = 50;
         int y = 10;
-        g.drawRect(350, 100, 50, 30);
-        replaceButton = new Rectangle(350, 100, 50, 30);
+        g.drawRect(350, 100, 75, 30);
+        replaceButton = new Rectangle(350, 100, 75, 30);
+        g.drawString("Check combo", 350, 120);
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 g.drawImage(currentCards[r][c].getImage(), x * r * 2, y * c * 10, null);
@@ -55,6 +57,8 @@ class DrawPanel extends JPanel implements MouseListener {
         if (!valid){
             g.drawString("Invalid combination.", x + 150, y + 350);
         }
+
+
     }
 
     public void mousePressed(MouseEvent e) {
@@ -62,7 +66,6 @@ class DrawPanel extends JPanel implements MouseListener {
         Point p = e.getPoint();
         int button = e.getButton();
         Point rep = e.getPoint();
-        int replace = e.getButton();
         if (button == 1 && replaceButton.contains(rep)){
             valid = true;
             ArrayList<Card> highlightedCards = new ArrayList<>();
@@ -80,7 +83,11 @@ class DrawPanel extends JPanel implements MouseListener {
                 }
             }
             else if (highlightedCards.size() == 2){
-                if ((Integer.parseInt(highlightedCards.get(0).getValue()) + Integer.parseInt(highlightedCards.get(1).getValue()) == 11) || highlightedCards.get(0).getValue() == "10"){
+                boolean check1 = true;
+                boolean check2 = true;
+                if ((highlightedCards.get(0).getValue().equals("10") && highlightedCards.get(1).getValue().equals("A")) || (highlightedCards.get(1).getValue().equals("10") && highlightedCards.get(0).getValue().equals("A"))){
+                    valid = true;
+                    System.out.println("valid");
                     for (int r = 0; r < 3; r++){
                         for (int c = 0; c < 3; c++){
                             if (currentCards[r][c].isHighlighted()){
@@ -91,23 +98,62 @@ class DrawPanel extends JPanel implements MouseListener {
                         }
                     }
                 }
+                else {
+                    check1 = false;
+                }
+                boolean allNums = true;
+                for (Card c : highlightedCards){
+                    if (c.getValue().equals("A")|| c.getValue().equals("J") || c.getValue().equals("Q") || c.getValue().equals("K")){
+                        allNums = false;
+                    }
+                }
+                if (allNums){
+                    if ((Integer.parseInt(highlightedCards.get(0).getValue()) + Integer.parseInt(highlightedCards.get(1).getValue())) == 11){
+                        valid = true;
+                        System.out.println("valid");
+                        for (int r = 0; r < 3; r++){
+                            for (int c = 0; c < 3; c++){
+                                if (currentCards[r][c].isHighlighted()){
+                                    int newInd = (int)(Math.random() * unusedDeck.size());
+                                    currentCards[r][c] = unusedDeck.get(newInd);
+                                    unusedDeck.remove(newInd);
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        check2 = false;
+                    }
+                }
+                else {
+                    check2 = false;
+                }
+                if (!check1 && !check2){
+                    valid = false;
+                    for (Card c : highlightedCards){
+                        c.setHighlighted();
+                    }
+                }
+
             }
             else {
                 int jCount = 0;
                 int qCount = 0;
                 int kCount = 0;
                 for (Card c : highlightedCards){
-                    if (c.getSuit().equals("J")){
+                    if (c.getValue().equals("J")){
                         jCount++;
+
                     }
-                    if (c.getSuit().equals("Q")){
+                    if (c.getValue().equals("Q")){
                         qCount++;
                     }
-                    if (c.getSuit().equals("K")){
+                    if (c.getValue().equals("K")){
                         kCount++;
                     }
-            }
+                }
                 if (jCount == 1 && qCount == 1 && kCount == 1) {
+                    valid = true;
                     for (int r = 0; r < 3; r++){
                         for (int c = 0; c < 3; c++){
                             if (currentCards[r][c].isHighlighted()){
