@@ -11,12 +11,15 @@ class DrawPanel extends JPanel implements MouseListener {
     private ArrayList<Card> unusedDeck;
     private Rectangle replaceButton;
     private boolean valid;
+    private ArrayList<Card> highlightedCards;
+    private Card[] currentCards1D = new Card[9];
 
     public DrawPanel() {
         d = new Deck();
         unusedDeck = d.getCards();
         currentCards = new Card[3][3];
         valid = true;
+        highlightedCards = new ArrayList<>();
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 currentCards[r][c] = unusedDeck.get((int) (Math.random() * unusedDeck.size()));
@@ -34,9 +37,17 @@ class DrawPanel extends JPanel implements MouseListener {
         super.paintComponent(g);
         int x = 50;
         int y = 10;
+        int counter = -1;
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++){
+                counter++;
+                currentCards1D[counter] = currentCards[r][c];
+            }
+        }
         g.drawRect(350, 100, 75, 30);
         replaceButton = new Rectangle(350, 100, 75, 30);
         g.drawString("Check combo", 350, 120);
+        highlightedCards.clear();
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 g.drawImage(currentCards[r][c].getImage(), x * r * 2, y * c * 10, null);
@@ -49,6 +60,7 @@ class DrawPanel extends JPanel implements MouseListener {
                 if (currentCards[r][c].isHighlighted()){
                     g.setColor(Color.PINK);
                     g.drawRect(x * r * 2 , y * c * 10, currentCards[r][c].getImage().getWidth(), currentCards[r][c].getImage().getHeight());
+                    highlightedCards.add(currentCards[r][c]);
                 }
             }
         }
@@ -57,8 +69,52 @@ class DrawPanel extends JPanel implements MouseListener {
         if (!valid){
             g.drawString("Invalid combination.", x + 150, y + 350);
         }
+        if (hasNoMatches()){
+            g.drawString("You lost!", x + 200, y + 400);
+        }
 
-
+    }
+    public boolean hasNoMatches() {
+        boolean noMatches = true;
+        for (int i = 0; i < currentCards1D.length; i++){
+            if (currentCards1D[i].getValue().equals("J") || currentCards1D[i].getValue().equals("Q") || currentCards1D[i].getValue().equals("K")){
+                boolean ja = false;
+                boolean q = false;
+                boolean k = false;
+                for (int j = 0; j < currentCards1D.length; j++){
+                    if (currentCards1D[j].getValue().equals("J")){
+                        ja = true;
+                    }
+                    if (currentCards1D[j].getValue().equals("Q")){
+                        q = true;
+                    }
+                    if (currentCards1D[j].getValue().equals("K")){
+                        k = true;
+                    }
+                }
+                if (ja && q && k){
+                    noMatches = false;
+                }
+            }
+            else if (currentCards1D[i].getValue().equals("A")){
+                for (int j = 0; j < currentCards1D.length; j++){
+                    if (currentCards1D[j].getValue().equals("10")){
+                        noMatches = false;
+                    }
+                }
+            }
+            else {
+                int currentNum = Integer.parseInt(currentCards1D[i].getValue());
+                for (int j = 0; j < currentCards1D.length; j++){
+                    if (!currentCards1D[j].getValue().equals("J")|| !currentCards1D[j].getValue().equals("Q")||!currentCards1D[j].getValue().equals("K")||!currentCards1D[j].getValue().equals("A")) {
+                        if (currentNum + Integer9parseInt(currentCards1D[j].getValue()) == 11 && i != j) {
+                            noMatches = false;
+                        }
+                    }
+                }
+            }
+        }
+        return noMatches;
     }
 
     public void mousePressed(MouseEvent e) {
@@ -68,14 +124,6 @@ class DrawPanel extends JPanel implements MouseListener {
         Point rep = e.getPoint();
         if (button == 1 && replaceButton.contains(rep)){
             valid = true;
-            ArrayList<Card> highlightedCards = new ArrayList<>();
-            for (int r = 0; r < 3; r++){
-                for (int c = 0; c < 3; c++){
-                    if (currentCards[r][c].isHighlighted()){
-                        highlightedCards.add(currentCards[r][c]);
-                    }
-                }
-            }
             if (highlightedCards.size() > 3 || highlightedCards.size() < 2){
                 valid = false;
                 for (Card c : highlightedCards){
