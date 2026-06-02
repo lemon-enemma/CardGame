@@ -26,10 +26,15 @@ class DrawPanel extends JPanel implements MouseListener {
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 currentCards[r][c] = unusedDeck.get((int) (Math.random() * unusedDeck.size()));
-                for (int i = 0; i < unusedDeck.size(); i++) {
-                    if (unusedDeck.get(i).getImageFileName().equals(currentCards[r][c].getImageFileName())) {
-                        unusedDeck.remove(i);
+                if (unusedDeck.size()-1 >= 0) {
+                    for (int i = 0; i < unusedDeck.size(); i++) {
+                        if (unusedDeck.get(i).getImageFileName().equals(currentCards[r][c].getImageFileName())) {
+                            unusedDeck.remove(i);
+                        }
                     }
+                }
+                else {
+                    currentCards[r][c] = null;
                 }
             }
         }
@@ -77,6 +82,17 @@ class DrawPanel extends JPanel implements MouseListener {
         }
         if (hasNoMatches()){
             g.drawString("No more matches possible. You lost!", x + 200, y + 400);
+        }
+        boolean allNull = true;
+        for (int r = 0; r < 3; r++){
+            for (int c = 0; c < 3; c++){
+                if (currentCards[r][c] != null){
+                    allNull = false;
+                }
+            }
+        }
+        if (allNull){
+            g.drawString("You win!", x + 200, y + 400);
         }
 
 
