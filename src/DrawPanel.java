@@ -14,14 +14,12 @@ class DrawPanel extends JPanel implements MouseListener {
     private ArrayList<Card> highlightedCards;
     private Card[] currentCards1D = new Card[9];
     private Rectangle resetButton;
-    private boolean win;
 
     public DrawPanel() {
         d = new Deck();
         unusedDeck = d.getCards();
         currentCards = new Card[3][3];
         valid = true;
-        win = false;
         highlightedCards = new ArrayList<>();
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
@@ -159,6 +157,19 @@ class DrawPanel extends JPanel implements MouseListener {
                     for (int r = 0; r < 3; r++){
                         for (int c = 0; c < 3; c++){
                             if (currentCards[r][c].isHighlighted()){
+                                if (unusedDeck.size()-1 >= 0) {
+                                    int newInd = (int)(Math.random() * unusedDeck.size());
+                                    currentCards[r][c] = unusedDeck.get(newInd);
+                                    unusedDeck.remove(newInd);
+                                    for (int i = 0; i < unusedDeck.size(); i++) {
+                                        if (unusedDeck.get(i).getImageFileName().equals(currentCards[r][c].getImageFileName())) {
+                                            unusedDeck.remove(i);
+                                        }
+                                    }
+                                }
+                                else {
+                                    currentCards[r][c] = null;
+                                }
                                 int newInd = (int)(Math.random() * unusedDeck.size());
                                 currentCards[r][c] = unusedDeck.get(newInd);
                                 unusedDeck.remove(newInd);
@@ -179,9 +190,19 @@ class DrawPanel extends JPanel implements MouseListener {
                             for (int r = 0; r < 3; r++) {
                                 for (int c = 0; c < 3; c++) {
                                     if (currentCards[r][c].isHighlighted()) {
-                                        int newInd = (int) (Math.random() * unusedDeck.size());
-                                        currentCards[r][c] = unusedDeck.get(newInd);
-                                        unusedDeck.remove(newInd);
+                                        if (unusedDeck.size()-1 >= 0) {
+                                            int newInd = (int)(Math.random() * unusedDeck.size());
+                                            currentCards[r][c] = unusedDeck.get(newInd);
+                                            unusedDeck.remove(newInd);
+                                            for (int i = 0; i < unusedDeck.size(); i++) {
+                                                if (unusedDeck.get(i).getImageFileName().equals(currentCards[r][c].getImageFileName())) {
+                                                    unusedDeck.remove(i);
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            currentCards[r][c] = null;
+                                        }
                                     }
                                 }
                             }
@@ -211,9 +232,19 @@ class DrawPanel extends JPanel implements MouseListener {
                     for (int r = 0; r < 3; r++){
                         for (int c = 0; c < 3; c++){
                             if (currentCards[r][c].isHighlighted()){
-                                int newInd = (int)(Math.random() * unusedDeck.size());
-                                currentCards[r][c] = unusedDeck.get(newInd);
-                                unusedDeck.remove(newInd);
+                                if (unusedDeck.size()-1 >= 0) {
+                                    int newInd = (int)(Math.random() * unusedDeck.size());
+                                    currentCards[r][c] = unusedDeck.get(newInd);
+                                    unusedDeck.remove(newInd);
+                                    for (int i = 0; i < unusedDeck.size(); i++) {
+                                        if (unusedDeck.get(i).getImageFileName().equals(currentCards[r][c].getImageFileName())) {
+                                            unusedDeck.remove(i);
+                                        }
+                                    }
+                                }
+                                else {
+                                    currentCards[r][c] = null;
+                                }
                             }
                         }
                     }
